@@ -1,0 +1,52 @@
+1.	//CharityCoin ICO  
+2.	pragma solidity ^0.5.1;  
+3.	  
+4.	contract CharityCoin_ico {  
+5.	      
+6.	    // Max CharityCoin  
+7.	    uint public max_charitycoin = 100000000;  
+8.	      
+9.	    // PKR to CharityCoin conversion rate  
+10.	    uint public pkr_to_charitycoin = 1000;  
+11.	      
+12.	    // Total CharityCoin bought by the investors  
+13.	    uint public total_charitycoin_bought = 0;  
+14.	      
+15.	    //Mapping from investors address to its equity in CharityCoin and PKR  
+16.	    mapping(address => uint) equity_charitycoin;  
+17.	    mapping(address => uint) equity_pkr;  
+18.	      
+19.	    // Function to check if modifier can buy CharityCoin  
+20.	    modifier can_buy_charitycoin (uint pkr_invested) {  
+21.	        require(pkr_invested * pkr_to_charitycoin + total_charitycoin_bought <= max_charitycoin);  
+22.	        _;  
+23.	    }  
+24.	      
+25.	    // Getting the equity in CharityCoin of investor  
+26.	    function equity_in_charitycoin(address investor) external view returns (uint) {  
+27.	        return equity_charitycoin[investor];  
+28.	    }  
+29.	      
+30.	    // Getting the equity in PKR of investor  
+31.	    function equity_in_pkr(address investor) external view returns (uint) {  
+32.	        return equity_pkr[investor];  
+33.	    }  
+34.	      
+35.	    // Buying CharityCoin  
+36.	      
+37.	    function buy_chaitycoin(address investor, uint pkr_invested) external  
+38.	    can_buy_charitycoin(pkr_invested){  
+39.	        uint charitycoin_bought = pkr_invested * pkr_to_charitycoin;  
+40.	        equity_charitycoin[investor] += charitycoin_bought;  
+41.	        equity_pkr[investor] = equity_charitycoin[investor] /pkr_to_charitycoin;  
+42.	        total_charitycoin_bought += charitycoin_bought;  
+43.	    }  
+44.	      
+45.	    //Selling CharityCoin  
+46.	      
+47.	    function sell_chaitycoin(address investor, uint charitycoin_to_sell) external {  
+48.	        equity_charitycoin[investor] -= charitycoin_to_sell;  
+49.	        equity_pkr[investor] = equity_charitycoin[investor] /pkr_to_charitycoin;  
+50.	        total_charitycoin_bought -= charitycoin_to_sell;  
+51.	    }  
+52.	}   
